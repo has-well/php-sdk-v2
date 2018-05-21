@@ -3,7 +3,7 @@
 namespace Fondy\Response;
 
 use Fondy\Configuration;
-use Fondy\Exeption\ApiExeption;
+use Fondy\Exception\ApiException;
 use Fondy\Helper\ResponseHelper;
 use Fondy\Helper\ResultHelper;
 
@@ -22,7 +22,11 @@ class Response
      */
     protected $apiVersion;
 
-
+    /**
+     * Response constructor.
+     * @param $data
+     * @throws ApiException
+     */
     public function __construct($data)
     {
         $this->requestType = Configuration::getRequestType();
@@ -48,14 +52,14 @@ class Response
      * Check response on errors
      * @param $response
      * @return mixed
-     * @throws ApiExeption
+     * @throws ApiException
      */
     private function checkResponse($response)
     {
         if (isset($response['response']['response_status']) && $response['response']['response_status'] == 'failure')
-            throw new ApiExeption('Request is incorrect.', 200, $response);
+            throw new ApiException('Request is incorrect.', 200, $response);
         if (isset($response['response']['error_code']))
-            throw new ApiExeption('Request is incorrect.', 200, $response);
+            throw new ApiException('Request is incorrect.', 200, $response);
         return $response;
     }
 
@@ -77,6 +81,9 @@ class Response
     {
         if (isset($this->response['response']['checkout_url'])) {
             return $this->response['response']['checkout_url'];
+        }
+        if (isset($this->getData()['checkout_url'])) {
+            return $this->getData()['checkout_url'];
         } else {
             return false;
         }
@@ -94,13 +101,25 @@ class Response
         }
     }
 
+    protected function buildVerifyData()
+    {
+        if ($this->apiVersion === '2.0') {
+            $data = ResponseHelper::getBase64Data($this->response);
+            $data['encodedData'] = $this->response['response']['data'];
+            $data['signature'] = $this->response['response']['signature'];
+        } else {
+            $data = $this->getData();
+        }
+        return $data;
+    }
+
     /**
      * @return bool
      */
     public function isApproved()
     {
-        $data = $this->getData();
-        return ResultHelper::isPaymentApproved($data);
+        $data = $this->buildVerifyData();
+        return ResultHelper::isPaymentApproved($data, '', $this->apiVersion);
     }
 
     /**
@@ -108,7 +127,7 @@ class Response
      */
     public function isValid()
     {
-        $data = $this->getData();
-        return ResultHelper::isPaymentValid($data);
+        $data = $this->buildVerifyData();
+        return ResultHelper::isPaymentValid($data, '', $this->apiVersion);
     }
 }

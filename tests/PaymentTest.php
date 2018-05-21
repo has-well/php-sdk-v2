@@ -32,6 +32,13 @@ class PaymentTest extends TestCase
         'client_ip' => '127.2.2.1'
     ];
 
+    /**
+     * PaymentTest constructor.
+     * @param null $name
+     * @param array $data
+     * @param string $dataName
+     * @throws Exception\ApiException
+     */
     public function __construct($name = null, array $data = array(), $dataName = '')
     {
         $this->setTestConfig();
@@ -43,21 +50,60 @@ class PaymentTest extends TestCase
     {
         \Fondy\Configuration::setMerchantId($this->mid);
         \Fondy\Configuration::setSecretKey($this->Secret);
-        \Fondy\Configuration::setApiVersion('1.0');
+
     }
 
+    /**
+     * @throws Exception\ApiException
+     */
     public function testRecurring()
     {
         $this->setTestConfig();
+        \Fondy\Configuration::setApiVersion('1.0');
         foreach ($this->request_types as $type) {
             \Fondy\Configuration::setRequestType($type);
             $result = \Fondy\Payment::recurring($this->TestData);
-            $this->assertNotEmpty($result->isApproved(), true);
-            $this->assertNotEmpty($result->isValid(), true);
+            $this->assertEquals($result->isApproved(), true);
+            $this->assertEquals($result->isValid(), true);
             $this->assertEquals($result->getData()['response_status'], 'success');
         }
     }
 
+    /**
+     * @throws Exception\ApiException
+     */
+    public function testRecurringv2()
+    {
+        $this->setTestConfig();
+        \Fondy\Configuration::setApiVersion('2.0');
+        \Fondy\Configuration::setRequestType('json');
+        $result = \Fondy\Payment::recurring($this->TestData);
+        $this->assertEquals($result->isApproved(), true);
+        $this->assertEquals($result->isValid(), true);
+        $this->assertEquals($result->getData()['response_status'], 'success');
+
+    }
+
+    /**
+     * @throws Exception\ApiException
+     */
+    public function testReports()
+    {
+        $this->setTestConfig();
+        $Data = [
+            "date_from" => date('d.m.Y H:i:s', time() - 3600),
+            "date_to" => date('d.m.Y H:i:s'),
+        ];
+        $reports = \Fondy\Payment::reports($Data);
+        $this->assertEquals($reports->getData()[0]['response_status'], 'success');
+
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     * @throws Exception\ApiException
+     */
     private function getToken($data)
     {
         $data = \Fondy\Pcidss::start($data);

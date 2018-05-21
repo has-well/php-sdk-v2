@@ -22,7 +22,7 @@ class StepTwo extends Api
      * @param $data
      * @param array $headers
      * @return mixed
-     * @throws \Fondy\Exeption\ApiExeption
+     * @throws \Fondy\Exception\ApiException
      */
     public function get($data, $headers = [])
     {
@@ -37,15 +37,14 @@ class StepTwo extends Api
      */
     protected function prepareParams($params)
     {
-        $prepared_params = $params;
-
-        if (!isset($prepared_params['merchant_id'])) {
-            $prepared_params['merchant_id'] = $this->mid;
+        if (!isset($params['merchant_id'])) {
+            $params['merchant_id'] = $this->mid;
         }
-        foreach ($prepared_params as $key => $value) {
-            $prepared_params[$key] = trim($value);
+        $returnData = [];
+        foreach ($params as $key => $value) {
+            $returnData[strtolower($key)] = trim($value);
         }
-        return $prepared_params;
+        return $returnData;
     }
 
 }

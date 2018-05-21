@@ -2,16 +2,33 @@
 
 namespace Fondy\Response;
 
-use Fondy\Exeption\ApiExeption;
+use Fondy\Exception\ApiException;
+use Fondy\Helper\ResponseHelper;
 
 class OrderResponse extends Response
 {
+    /**
+     * @return array|mixed
+     */
+    public function getData()
+    {
+        if ($this->apiVersion === '2.0') {
+            if (isset($this->response['response']['data'])) {
+                return ResponseHelper::getBase64Data($this->response);
+            } else {
+                return $this->response['response'];
+            }
+        } else {
+            return $this->response['response'];
+        }
+    }
+
     /**
      * @return bool
      */
     public function isReversed()
     {
-        $data = $this->getData();
+        $data = $this->buildVerifyData();
         if (!isset($data['reverse_status']))
             return 'Nothing to check';
         $valid = $this->isValid();
@@ -27,7 +44,7 @@ class OrderResponse extends Response
      */
     public function isCaptured()
     {
-        $data = $this->getData();
+        $data = $this->buildVerifyData();
         if (!isset($data['capture_status']))
             return 'Nothing to check';
         $valid = $this->isValid();
@@ -50,6 +67,10 @@ class OrderResponse extends Response
         return $data['capture_status'] != 'captured' ? false : true;
     }
 
+    /**
+     * @return mixed
+     * @throws ApiException
+     */
     private function getCapturedTransAction()
     {
         foreach ($this->getData() as $data) {
@@ -59,8 +80,9 @@ class OrderResponse extends Response
             ) {
                 return $data;
             } else {
-                throw new ApiExeption('Nothing to capture');
+                throw new ApiException('Nothing to capture');
             }
         }
+        return false;
     }
 }
