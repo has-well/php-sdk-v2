@@ -16,6 +16,10 @@ class Response
     /**
      * @var string
      */
+    protected $paymentKey;
+    /**
+     * @var string
+     */
     protected $requestType;
     /**
      * @var array
@@ -29,15 +33,17 @@ class Response
     /**
      * Response constructor.
      * @param $data
+     * @param $type
      * @throws ApiException
      */
-    public function __construct($data)
+    public function __construct($data, $type = '')
     {
         if (isset($data['order_id']))
             $this->orderID = $data['order_id'];
         $data = $data['response'];
         $this->requestType = Configuration::getRequestType();
         $this->apiVersion = Configuration::getApiVersion();
+        $this->setKeyByOperationType($type);
         switch ($this->requestType) {
             case 'xml':
                 $response = ResponseHelper::xmlToArray($data);
@@ -48,6 +54,8 @@ class Response
             case 'json':
                 $response = ResponseHelper::jsonToArray($data);
                 break;
+            default:
+                $response = null;
         }
 
         $this->checkResponse($response);
@@ -84,6 +92,7 @@ class Response
     }
 
     /**
+     * Getting checkout_url from response
      * @return bool|string
      */
     public function getUrl()
@@ -110,6 +119,9 @@ class Response
         }
     }
 
+    /**
+     * @return array|mixed
+     */
     protected function buildVerifyData()
     {
         if ($this->apiVersion === '2.0') {
@@ -123,6 +135,7 @@ class Response
     }
 
     /**
+     * Get order id
      * @return mixed
      */
     public function getOrderID()
@@ -131,20 +144,35 @@ class Response
     }
 
     /**
+     * Checking if order is approved
      * @return bool
      */
     public function isApproved()
     {
         $data = $this->buildVerifyData();
-        return ResultHelper::isPaymentApproved($data, '', $this->apiVersion);
+        return ResultHelper::isPaymentApproved($data, $this->paymentKey, $this->apiVersion);
     }
 
     /**
+     * Checking if order signature is valid
      * @return bool
      */
     public function isValid()
     {
         $data = $this->buildVerifyData();
-        return ResultHelper::isPaymentValid($data, '', $this->apiVersion);
+        return ResultHelper::isPaymentValid($data, $this->paymentKey, $this->apiVersion);
+    }
+
+    /**
+     * setting secret key by operation type
+     * @param $type
+     */
+    protected function setKeyByOperationType($type = '')
+    {
+        if ($type === 'credit') {
+            $this->paymentKey = Configuration::getCreditKey();
+        } else {
+            $this->paymentKey = Configuration::getSecretKey();
+        }
     }
 }

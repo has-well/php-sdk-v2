@@ -22,7 +22,7 @@ composer require cloudipsp/php-sdk-v2
 ```
 #### Manual installation
 ```cmd
-git clone -b master https://github.com/dimoncheg12/php-sdk-v2.git
+git clone -b master https://github.com/cloudipsp/php-sdk-v2.git
 ```
 
 ```php
@@ -45,11 +45,15 @@ $url = $data->getUrl();
 ```
 # Api
 
-See [php-docs](https://dimoncheg12.github.io/php-docs/)
+See [php-docs](https://cloudipsp.github.io/php-docs/)
 ## Examples
 To check it you can use build-in php server
 ```cmd
 cd ~/php-sdk-v2
 php -S localhost:8000
 ```
-[Checkout examples](https://github.com/dimoncheg12/php-sdk-v2/tree/master/examples)
+[Checkout examples](https://github.com/cloudipsp/php-sdk-v2/tree/master/examples)
+
+## Author
+
+D.M.
