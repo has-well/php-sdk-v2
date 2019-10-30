@@ -8,4 +8,4 @@ branches:
     master
 before_install:
   - composer install
-script: phpunit --bootstrap vendor/autoload.php tests
+script: vendor/bin/phpunit --bootstrap vendor/autoload.php tests
