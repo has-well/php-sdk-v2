@@ -69,7 +69,7 @@ class OrderTest extends TestCase
         ];
         $data = Order::capture($captureData);
         $result = $data->getData();
-        $this->assertIsArray($result);
+        $this->assertIsMyArray($result);
         $this->assertEquals($result['capture_status'], 'captured');
     }
 
@@ -99,7 +99,7 @@ class OrderTest extends TestCase
         $this->setTestConfig();
         $data = Order::transactionList($this->orderID);
         $result = $data->getData();
-        $this->assertIsArray($result);
+        $this->assertIsMyArray($result);
         $this->assertEquals('approved', $result[0]['transaction_status']);
 
     }
@@ -108,11 +108,12 @@ class OrderTest extends TestCase
      * @param $array
      * @param $message
      */
-    private function assertIsArray($array, $message = ''){
-        if (method_exists(get_parent_class($this), 'assertInternalType')) {
-            TestCase::assertInternalType('array', $array ,$message);
+    private function assertIsMyArray($array, $message = '')
+    {
+        if (method_exists(get_parent_class($this), 'assertIsArray')) {
+            $this->assertIsArray($array, $message);
         } else {
-            TestCase::assertIsArray($array, $message);
+            $this->assertInternalType('array', $array, $message);
         }
     }
 

@@ -75,7 +75,7 @@ class CheckoutTest extends TestCase
     {
         $this->setTestConfig();
         $result = Checkout::form($this->fullTestData);
-        $this->assertIsString($result, "Got a " . gettype($result) . " instead of a string");
+        $this->assertIsMyString($result, "Got a " . gettype($result) . " instead of a string");
     }
 
     /**
@@ -85,18 +85,19 @@ class CheckoutTest extends TestCase
     private function validateTokenResult($result)
     {
         $this->assertNotEmpty($result['token'], 'payment_id is empty');
-        $this->assertIsString($result['token'], "Got a " . gettype($result['token']) . " instead of a string");
+        $this->assertIsMyString($result['token'], "Got a " . gettype($result['token']) . " instead of a string");
     }
 
     /**
      * @param $string
      * @param $message
      */
-    private function assertIsString($string, $message){
-        if  (method_exists(get_parent_class($this), 'assertInternalType')) {
-            TestCase::assertInternalType('string', $string ,$message);
+    private function assertIsMyString($string, $message)
+    {
+        if (method_exists(get_parent_class($this), 'assertIsString')) {
+            $this->assertIsString($string, $message);
         } else {
-            TestCase::assertIsString($string, $message);
+            $this->assertInternalType('string', $string, $message);
         }
     }
 
