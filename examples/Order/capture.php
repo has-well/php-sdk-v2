@@ -11,7 +11,7 @@ try {
         'card_number' => '4444555511116666',
         'cvv2' => '333',
         'expiry_date' => '1232',
-        'currency' => 'USD',
+        'currency' => 'UAH',
         'preauth' => 'Y',
         'amount' => 1000,
         'client_ip' => '127.2.2.1'
@@ -22,7 +22,7 @@ try {
     // Required param to capture it prev order_id see more https://docs.fondy.eu/docs/page/12/
     if ($captured_order_data->isApproved()) {// Checking if prev payment valid(signature)
         $dataToCapture = [
-            'currency' => 'USD',
+            'currency' => 'UAH',
             'amount' => 1000,
             'order_id' => $TestOrderData['order_id']
         ];
