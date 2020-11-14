@@ -40,7 +40,7 @@ class ConfigurationTest extends TestCase
         $this->assertInstanceOf('\\Cloudipsp\\HttpClient\\HttpGuzzle', \Cloudipsp\Configuration::getHttpClient());
         \Cloudipsp\Configuration::setHttpClient('HttpCurl');
         $this->assertInstanceOf('\\Cloudipsp\\HttpClient\\HttpCurl', \Cloudipsp\Configuration::getHttpClient());
-        $this->setExpectedException('PHPUnit_Framework_Error_Notice');
+        $this->expectNotice();
         $this->assertFalse(\Cloudipsp\Configuration::setHttpClient('Unknown'));
     }
 

@@ -74,13 +74,13 @@ class CheckoutTest extends TestCase
     {
         $this->setTestConfig();
         $result = \Cloudipsp\Checkout::form($this->fullTestData);
-        $this->assertInternalType('string', $result, "Got a " . gettype($result) . " instead of a string");
+        $this->assertIsString($result, "Got a " . gettype($result) . " instead of a string");
     }
 
     private function validateTokenResult($result)
     {
         $this->assertNotEmpty($result['token'], 'payment_id is empty');
-        $this->assertInternalType('string', $result['token'], "Got a " . gettype($result['token']) . " instead of a string");
+        $this->assertIsString($result['token'], "Got a " . gettype($result['token']) . " instead of a string");
     }
 
     private function validateCheckoutUrlResult($result)

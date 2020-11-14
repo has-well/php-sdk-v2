@@ -69,7 +69,7 @@ class OrderTest extends TestCase
         ];
         $data = \Cloudipsp\Order::capture($captureData);
         $result = $data->getData();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertEquals($result['capture_status'], 'captured');
     }
 
@@ -99,7 +99,7 @@ class OrderTest extends TestCase
         $this->setTestConfig();
         $data = \Cloudipsp\Order::transactionList($this->orderID);
         $result = $data->getData();
-        $this->assertInternalType('array', $result);
+        $this->assertIsArray($result);
         $this->assertContains('payment_id', $result[0]);
 
     }
