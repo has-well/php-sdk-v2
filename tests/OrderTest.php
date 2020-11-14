@@ -100,7 +100,7 @@ class OrderTest extends TestCase
         $data = Order::transactionList($this->orderID);
         $result = $data->getData();
         $this->assertIsArray($result);
-        $this->assertContains('order_id', $result[0]);
+        $this->assertEquals('approved', $result[0]['transaction_status']);
 
     }
 
