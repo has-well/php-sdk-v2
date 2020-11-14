@@ -105,15 +105,16 @@ class OrderTest extends TestCase
     }
 
     /**
-     * @throws Exception\ApiException
+     * @param $array
+     * @param $message
      */
-    /*public function testAtolLogs()
-    {
-        $this->setTestConfig();
-        $data = \Cloudipsp\Order::atolLogs($this->orderID);
-        $result = $data->getData();
-        $this->assertInternalType('array', $result);
-    }*/
+    private function assertIsArray($array, $message = ''){
+        if (method_exists(get_parent_class($this), 'assertInternalType')) {
+            TestCase::assertInternalType('array', $array ,$message);
+        } else {
+            TestCase::assertIsArray($array, $message);
+        }
+    }
 
     /**
      * @param $data
