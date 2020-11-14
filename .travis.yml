@@ -14,10 +14,6 @@ matrix:
 branches:
   only:
     master
-install:
-  - if [[ $TRAVIS_PHP_VERSION > '7.1' || $TRAVIS_PHP_VERSION = nightly ]]; then wget -O ~/.phpenv/versions/$(phpenv version-name)/bin/phpunit https://phar.phpunit.de/phpunit-7.phar; fi
-  - if [[ $TRAVIS_PHP_VERSION > '7.1' || $TRAVIS_PHP_VERSION = nightly ]]; then chmod 755 ~/.phpenv/versions/$(phpenv version-name)/bin/phpunit; fi
-before_script:
-  - php -v
-  - phpunit --version
+before_install:
+  - travis_retry composer install --no-interaction --prefer-source
 script: vendor/bin/phpunit --bootstrap vendor/autoload.php tests
