@@ -15,5 +15,5 @@ branches:
   only:
     master
 before_install:
-  - travis_retry composer install --no-interaction --prefer-source
+  - travis_retry composer install --no-interaction --prefer-source --ignore-platform-reqs
 script: vendor/bin/phpunit --bootstrap vendor/autoload.php tests
